@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Models\Category;
+use App\Models\Comment; // Asegúrate de importar el modelo Comment
 
 class UserController extends Controller
 {
@@ -94,6 +95,14 @@ class UserController extends Controller
         }
 
         try {
+            // Obtiene todos los blogs del usuario
+            $blogs = Blog::where('user_id', $user->id)->get();
+
+            // Elimina todos los comentarios asociados a los blogs del usuario
+            foreach ($blogs as $blog) {
+                Comment::where('blog_id', $blog->id)->delete();
+            }
+
             // Elimina todos los blogs asociados al usuario
             Blog::where('user_id', $user->id)->delete();
 
